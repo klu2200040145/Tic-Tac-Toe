@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 2px;
+        border: 3px solid #333;
+        border-radius: 5px;
+    }
+
+    .cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        font-size: 36px;
+        color: #333;
+    }
+
+    .cell:hover {
+        background-color: #f0f0f0;
+    }
+
+    .winner {
+        background-color: #a8e6cf;
+        color: #333;
+    }
+
+    .draw {
+        background-color: #ffd3b6;
+        color: #333;
+    }
+
+    .message {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+
+<div class="board" onclick="cellClicked(event)">
+    <div class="cell" data-cell="0"></div>
+    <div class="cell" data-cell="1"></div>
+    <div class="cell" data-cell="2"></div>
+    <div class="cell" data-cell="3"></div>
+    <div class="cell" data-cell="4"></div>
+    <div class="cell" data-cell="5"></div>
+    <div class="cell" data-cell="6"></div>
+    <div class="cell" data-cell="7"></div>
+    <div class="cell" data-cell="8"></div>
+</div>
+
+<div class="message" id="message"></div>
+
+<script>
+    const WINNING_COMBINATIONS = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+
+    let currentPlayer = 'X';
+    let gameEnded = false;
+
+    function cellClicked(event) {
+        const cell = event.target;
+        const cellIndex = parseInt(cell.getAttribute('data-cell'));
+
+        if (cell.classList.contains('cell') && !cell.innerText && !gameEnded) {
+            cell.innerText = currentPlayer;
+            if (checkWin()) {
+                document.getElementById('message').innerText = `${currentPlayer} wins!`;
+                document.getElementById('message').classList.add('winner');
+                gameEnded = true;
+            } else if (checkDraw()) {
+                document.getElementById('message').innerText = `It's a draw!`;
+                document.getElementById('message').classList.add('draw');
+                gameEnded = true;
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        }
+    }
+
+    function checkWin() {
+        return WINNING_COMBINATIONS.some(combination => {
+            return combination.every(index => {
+                return document.querySelector(`[data-cell="${index}"]`).innerText === currentPlayer;
+            });
+        });
+    }
+
+    function checkDraw() {
+        return [...document.querySelectorAll('.cell')].every(cell => {
+            return cell.innerText;
+        });
+    }
+</script>
+
+</body>
+</html>
